@@ -1,0 +1,184 @@
+// Sort the words in length, to conduct operations less
+// We find compound words, when they are, when iterating nothing remains
+
+
+#include "stdafx.h"
+#include <iostream>
+#include <string>
+
+
+using namespace std;
+char MyData[255];
+string Data;
+int wordLength;
+string RemoveWords(string Base,string Option);
+
+struct ListObj{
+	string data;
+	int WordLength;
+	int Con;
+	ListObj *next;
+};
+
+class List{
+ListObj *first;
+ListObj *last;
+ListObj *ascending;
+int count;
+public:
+	List();
+	void GetReplays();
+	void SetList(string d,int WL);
+	void GetList();
+	void SortList();
+};
+
+
+
+int _tmain(int argc, _TCHAR* argv[])
+{
+	List list;
+
+		//Enter data. At the end you enter 0
+		//Pushes the number of letters
+		cout<<"Enter you data. At the end, enter 0."<<endl;
+		for (;Data!="0" ;){
+		cin>>MyData;
+		Data = string(MyData);
+		if (Data == "0"){break;}
+		wordLength = strlen(MyData);
+		list.SetList(Data, wordLength);
+		}
+		list.SortList();
+		list.GetReplays();
+	system("PAUSE");
+	return 0;
+}
+
+List :: List(){
+	count=0;
+	first=NULL;
+	last=NULL;
+	ascending = NULL;}
+
+//Enter the word and its length in the list
+void List::SetList(string d, int WL){
+	count++;
+	ListObj *NewObj = new ListObj;
+	NewObj->data = d;
+	NewObj->WordLength = WL;
+	NewObj->Con=count;
+	NewObj->next = NULL;
+	if (first == NULL){
+		first = NewObj;}
+	else {
+		last->next = NewObj;}
+	last=NewObj;}
+
+void List::GetList(){
+	ListObj *temp = first;
+	while (temp){
+		cout<<temp->data<<endl;
+		temp=temp->next;}
+}
+
+//Sort by size words from smaller to larger
+void List::SortList(){
+int temp;
+int tempCon;
+string tempWord;
+ListObj *tempf=first;
+ListObj *temps=tempf->next;
+
+	for(int k=1;k<count;k++){
+		tempf=first;
+		temps=tempf->next;
+		while(temps){
+			if (temps->WordLength<=tempf->WordLength){
+				temp=temps->WordLength;
+				tempWord=temps->data;
+				tempCon=temps->Con;
+				temps->WordLength=tempf->WordLength;
+				temps->data=tempf->data;
+				temps->Con=tempf->Con;
+				tempf->WordLength=temp;
+				tempf->data=tempWord;
+				tempf->Con=tempCon;}
+			tempf=temps;
+			temps=tempf->next;}}}
+
+//Find the largest compound word
+void List::GetReplays(){
+	bool Found = false;
+	int WordLengthFound = 0;
+	ListObj *tempBase = first;
+	ListObj *tempOption = first;
+	string str;
+	int Leng;
+
+
+	while(tempBase){
+
+		//Considered in the search, only the words that are less than for the main (basic)
+		for( ;tempBase->WordLength>=tempOption->WordLength; ){
+
+			//If the word is not changed after treatment
+			if (tempBase->data == RemoveWords(tempBase->data,tempOption->data)){
+				tempOption=tempOption->next;
+			}
+
+			//If the key word when iterating disappears completely, it is composite.
+			//It is impossible to touch to itself
+			else if (RemoveWords(tempBase->data,tempOption->data).length() == 0 && tempBase->Con != tempOption->Con){
+				if (tempOption->WordLength >= tempBase->WordLength){
+					tempBase=tempBase->next;
+					tempOption=first;
+				}
+			tempBase=tempBase->next;
+			if (!tempBase){break;}
+			}
+
+			//The next word to iterate
+			else {
+				tempOption=tempOption->next;
+				if (!tempOption){break;}
+			}
+			str=tempBase->data;
+			Leng = tempBase->WordLength;
+		}
+		tempBase=tempBase->next;
+	}
+
+	//Getting the word out and length
+	cout<<"Word: "<<str<<endl;
+	cout<<"Length: "<<Leng<<endl;
+}
+
+//Remove part of the word
+string RemoveWords(string Base,string Option){
+	int SizeBase = Base.length();
+	int SizeOption = Option.length();
+	int min = 0;
+	int max = 0;
+	bool mark = false;
+
+	//Sort out the letters, thereby find the last letter
+	for(int i=0;i<SizeBase;){
+		for(int j=0;j <SizeOption; j++){
+			if (Base[i]==Option[j]){
+			i++;
+			}
+			else{
+				i++;
+				if (i == SizeBase){
+				break;}
+				j=-1;}}
+
+	//From the last letter we subtract the length of the auxiliary word and find the first letter
+	max = i;
+	min = max - SizeOption;
+	if (max <= SizeOption){break;}}
+
+//Is removed from the base of the word, where is the word for the search, and returns the base word
+Base.erase(min, max);
+return Base;}
