@@ -1,0 +1,145 @@
+#include <stdio.h>
+
+//The first structure
+struct Size_Rectangle{
+	float Width;
+	float Height;
+};
+
+//The second structure
+struct Rectangle {
+	struct Size_Rectangle Size;  
+	float Perimeter;
+	float Area;
+} rectangle;
+
+
+void AddData (struct Rectangle *data, float width, float height);
+void FindPerimeter(struct Rectangle *data);
+void FindArea(struct Rectangle *data);
+void SortByPerimeter (struct Rectangle *first, struct Rectangle *second);
+void SortByArea (struct Rectangle *first, struct Rectangle *second);
+void Display(struct Rectangle *data, int num);
+ 
+ 
+int main(void)
+{
+	int i, j; 
+    
+    //Width and Height
+    float WidthArray[10] = {23,16,18.84,53,6,7.40,92,5,5,1};
+    float HeightArray[10] = {15,102,3.14,8,21,0.3,18,5,5,10};
+    
+    //Array of structure
+    struct Rectangle Data[10];
+    
+    //I. Pushes height and width
+    for(i=0;i<10;i++){
+		AddData(&Data[i],WidthArray[i],HeightArray[i]);
+    }
+    
+    //II. Find the perimeter and area
+    for(i=0;i<10;i++){
+		FindPerimeter(&Data[i]);
+		FindArea(&Data[i]);
+    }
+    
+    //III a. Perimeter sorting and output
+    for (i = 0;i < 10;i++){
+    	for (j = 0; j < 10;j++){
+	    	SortByPerimeter(&Data[i],&Data[j]);
+	    }
+    }
+    printf("      Sort by perimeter:\n");
+    for(i = 0;i < 10;i++){
+		Display(&Data[i],i);
+	}
+	
+	//III b. Area sorting and output
+    for (i = 0;i < 10;i++){
+    	for (j = 0; j < 10;j++){
+	    	SortByArea(&Data[i],&Data[j]);
+	    }
+    }
+    printf("      Sort by area:\n");
+    for(i = 0;i < 10;i++){
+		Display(&Data[i],i);
+	}
+return 0;
+}
+
+//Pushes height and width
+void AddData (struct Rectangle *data, float width, float height){
+data->Perimeter = 0;
+data->Area = 0;
+data->Size.Width=width;
+data->Size.Height=height;
+}
+
+
+//Find the perimeter
+void FindPerimeter(struct Rectangle *data){
+	data->Perimeter = (data->Size.Width + data->Size.Height) * 2;
+}
+
+
+//Find the Area
+void FindArea(struct Rectangle *data){
+	data->Area = data->Size.Width * data->Size.Height;
+}
+
+//Perimeter sorting (bubble sort)
+void SortByPerimeter (struct Rectangle *first, struct Rectangle *second){
+	float temp;
+	if (first->Perimeter >= second->Perimeter){
+		temp=first->Perimeter;
+		first->Perimeter=second->Perimeter;
+		second->Perimeter=temp;
+		
+		temp=first->Area;
+		first->Area=second->Area;
+		second->Area=temp;
+		
+		temp=first->Size.Width;
+		first->Size.Width=second->Size.Width;
+		second->Size.Width=temp;
+		
+		temp=first->Size.Height;
+		first->Size.Height=second->Size.Height;
+		second->Size.Height=temp;
+	   }
+	}
+	
+	
+
+//Area sorting (bubble sort)
+void SortByArea (struct Rectangle *first, struct Rectangle *second){
+	float temp;
+	if (first->Area	 >= second->Area){
+		temp=first->Perimeter;
+		first->Perimeter=second->Perimeter;
+		second->Perimeter=temp;
+		
+		temp=first->Area;
+		first->Area=second->Area;
+		second->Area=temp;
+		
+		temp=first->Size.Width;
+		first->Size.Width=second->Size.Width;
+		second->Size.Width=temp;
+		
+		temp=first->Size.Height;
+		first->Size.Height=second->Size.Height;
+		second->Size.Height=temp;
+	   }
+	}
+
+
+//Output
+void Display(struct Rectangle *data, int num){
+	printf("Rectangle %i:\n", ++num);
+	printf("  Width = %f:\n", data->Size.Width);
+	printf("  Height = %f:\n", data->Size.Height);
+	printf("  Perimeter = %f:\n", data->Perimeter);
+	printf("  Area = %f:\n\n", data->Area);
+}
